@@ -1,1 +1,5 @@
 appshell/node_modules
+account/node_modules
+product/node_modules
+cart/node_modules
+purchase/node_modules
