@@ -2,7 +2,7 @@ import React, {Suspense} from "react";
 import './stylesheets/bootstrap.min.css'
 import './stylesheets/index.css'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-
+import {useHistory} from 'react-router-dom'
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
 
@@ -32,7 +32,7 @@ export default function App() {
                 <Switch>  
                     <Route exact path="/" render={_ => renderMFE(LandingPage)}/>
                     <Route path="/products" render={_ => renderMFE(ProductCatalog)}/>
-                    <Route path="/details" render={_ => renderMFE(PurchaseContainer)}/>
+                    <Route path="/details/:id" render={_ => renderMFE(PurchaseContainer)}/>
                     <Route path="/cart" render={_ => renderMFE(Cart)}/>
                     <Route path="/login" render={_ => renderMFE(Login)}/>
                     <Route path="/register" render={_ => renderMFE(Register)}/>

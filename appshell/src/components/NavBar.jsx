@@ -16,9 +16,6 @@ const NavBar = () => {
                     <Nav.Link href="/products">
                         <i className="fas fa-products"></i> Products
                     </Nav.Link>
-                    <Nav.Link href="/cart">
-                        <i className="fas fa-cart"></i>Cart
-                    </Nav.Link>
                     <Nav.Link href="/logout">
                         <i className='fas fa-user'></i> Logout
                     </Nav.Link>
