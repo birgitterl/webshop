@@ -1,16 +1,24 @@
 import React, {Suspense} from 'react';
+import { Card, Container, Row, Col, Button, Spinner } from 'react-bootstrap';
 
 const ProductDetail = React.lazy(() => import ("product/ProductDetail"));
 const Cart = React.lazy(() => import("cart/Cart"));
 
 const Purchase = () => {
+
     return (
-        <div>
             <Suspense fallback={<div>Loading...</div>}>
-                <ProductDetail/>
-                <Cart/>
+                <Container fluid>
+                    <Row>
+                        <Col>
+                            <ProductDetail/>
+                        </Col>
+                        <Col>
+                            <Cart />
+                        </Col>
+                    </Row>
+                </Container>
             </Suspense>
-        </div>
     )
 }
 
