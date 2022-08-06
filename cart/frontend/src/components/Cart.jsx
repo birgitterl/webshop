@@ -165,7 +165,7 @@ const Cart = () => {
           <Col></Col>
           <Col></Col>
           <Col>
-            <Button onClick={handleClick}>Proceed to Checkout</Button>
+            <Button onClick={handleClick}>Checkout</Button>
           </Col>
         </Row>
       </Container>
