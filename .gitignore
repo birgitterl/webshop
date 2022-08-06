@@ -2,5 +2,6 @@ appshell/node_modules
 account/backend/node_modules
 account/frontend/node_modules
 product/node_modules
-cart/node_modules
+cart/frontend/node_modules
+cart/backend/node_modules
 purchase/node_modules
