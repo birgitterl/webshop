@@ -116,13 +116,13 @@ router.get('/', async (req, res) => {
         msg: 'No users found',
       });
     } else {
-      res.status(200).json({
+      return res.status(200).json({
         status: 200,
         users,
       });
     }
   } catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
       status: 500,
       msg: 'Internal server error',
     });

@@ -1,20 +1,42 @@
-import React, {useState} from 'react';
-import {Link, Redirect} from 'react-router-dom';
+import React, {useState,useEffect} from 'react';
+import {Link, useHistory} from 'react-router-dom';
 import FormContainer from './FormContainerAuth';
 import { Form, Button, Row, Col } from 'react-bootstrap';
+import axios from 'axios';
 
 const Login = () => {
+   let history = useHistory();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [dirtyPassword, setDirtyPassword] = useState(false);
+    const [error, setError] = useState({});
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
       e.preventDefault();
-      login(username, password);
+      const body = {username, password};
+      try {
+        const res = await axios.post(
+          'http://localhost:8080/auth', body
+        );
+        console.log(res.data);
+        window.sessionStorage.setItem("token", res.data.token);
+        history.push("/products");
+      } catch (error) {
+        const errCode = error.response.data.status;
+        const errMessage = error.response.data.msg;
+        if (errCode == 404) {
+          setDirtyPassword(true);
+          setError({variant:"danger", message: errMessage})
+        }
+        console.log("Error Status: " + errCode + " Error Message: " +errMessage);      }
+      
     };
 
     return (
     <FormContainer>
-      <h1>Sign In</h1>
+      {dirtyPassword && <div className={`alert alert-${error.variant}`}>
+      {error.message}
+    </div>}      <h1>Sign In</h1>
       <Form onSubmit={onSubmit}>
         <Form.Group controlId="username">
           <Form.Label>User Name</Form.Label>

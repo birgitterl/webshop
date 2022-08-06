@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import FormContainer from './FormContainerAuth';
 import { Form, Button, Row, Col, Alert } from 'react-bootstrap';
 import axios from 'axios'
 
 const Register = () => {
+  let history = useHistory();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
@@ -13,7 +14,7 @@ const Register = () => {
     const [empNo, setEmpNo] = useState('');
     const [error, setError] = useState({});
     const [dirtyPassword, setDirtyPassword] = useState(false);
-    const [user, setUser] = useState();
+    const [userExists, setUserExists] =useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -22,38 +23,39 @@ const Register = () => {
       setError({variant:"danger", message:"Passwords do not match"})
     } else {
       setDirtyPassword(false);
-      setUser({
+      const user = {
           username: username,
           password: password,
           name: name,
           email: email,
           emp_no: empNo
-      })
+      }
       const config = {
         headers: {
           'Content-Type': 'application/json'
         }
       };
 
-    try {
-      const res = async() => {
-      await axios.post(
-        '/users', user, config).then(res => {console.log(res.data)});
-      }
-    } catch (error) {
-      console.log(error.message)
-      
-   
-    }
-    }
-  };
-
-  function register(user) {
-    
-    
+      try {
+        const res = await axios.post(
+        'http://localhost:8080/users', user, config);
+        console.log(res.data);
+        history.push("/login");
+      } catch (error) {
+        const errCode = error.response.data.status;
+        const errMessage = error.response.data.msg;
+        setDirtyPassword(false);
+        if(errCode == 400 ){
+          setUserExists(true);
+          setUserCreated(false);
+          setError({variant:"danger", message: errMessage})
+        }
+        console.log("Error Status: " + errCode + "Error Message: " +errMessage);
+      }     
+    };
   }
   useEffect(() => {
-  }, [dirtyPassword])
+  }, [dirtyPassword, userExists])
   
 
     return (
@@ -123,7 +125,7 @@ const Register = () => {
             minLength="6"
           />
         </Form.Group>
-        {dirtyPassword && <div className={`alert alert-${error.variant}`}>
+        {dirtyPassword || userExists && <div className={`alert alert-${error.variant}`}>
       {error.message}
     </div>}
         <Button type="submit" variant="primary">
