@@ -10,7 +10,6 @@ const App = () => {
       <Routes>
         <Route exact path="/" element={<Purchase />} />
       </Routes>
-      <Purchase />
     </Router>
   );
 };
