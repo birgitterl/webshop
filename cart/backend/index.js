@@ -8,6 +8,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/cart', require('./src/routes/api/cart'));
+app.use('/product', require('./src/routes/api/product'));
 
 app.get('/', (req, res) => {
   res.send('cart_mfe: server up and running...');
