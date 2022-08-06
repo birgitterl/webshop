@@ -8,7 +8,6 @@ const Login = () => {
   let navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [dirtyPassword, setDirtyPassword] = useState(false);
   const [alert, setAlert] = useState(null);
 
   const onSubmit = async (e) => {
@@ -23,7 +22,6 @@ const Login = () => {
       const errCode = error.response.data.status;
       const errMessage = error.response.data.msg;
       if (errCode == 404) {
-        setDirtyPassword(true);
         setAlert({ variant: 'danger', message: errMessage });
       }
       console.log('Error Status: ' + errCode + ' Error Message: ' + errMessage);

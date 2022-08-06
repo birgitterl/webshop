@@ -13,13 +13,10 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [empNo, setEmpNo] = useState('');
   const [alert, setAlert] = useState(null);
-  const [dirtyPassword, setDirtyPassword] = useState(false);
-  const [userExists, setUserExists] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setDirtyPassword(true);
       setAlert({ variant: 'danger', message: 'Passwords do not match' });
     } else {
       const user = {
@@ -47,7 +44,6 @@ const Register = () => {
         const errCode = error.response.data.status;
         const errMessage = error.response.data.msg;
         if (errCode == 400) {
-          setUserExists(true);
           setAlert({ variant: 'danger', message: errMessage });
         }
         console.log(
@@ -58,8 +54,6 @@ const Register = () => {
   };
   useEffect(() => {
     setTimeout(() => {
-      setDirtyPassword(false);
-      setUserExists(false);
       setAlert(null);
     }, 5000);
   }, [alert]);
