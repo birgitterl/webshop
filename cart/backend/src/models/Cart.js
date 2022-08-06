@@ -22,10 +22,15 @@ const CartSchema = new mongoose.Schema({
       price: {
         type: Number,
         required: true
+      },
+      totalAmount: {
+        type: Number,
+        required: true,
+        min: [0, 'quantity cannot be negative']
       }
     }
   ],
-  totalAmount: {
+  cartPrice: {
     type: Number,
     required: true
   }

@@ -45,6 +45,7 @@ module.exports = {
       filename: 'remoteEntry.js',
       remotes: {},
       exposes: {
+        './TinyCart': './src/components/TinyCart.jsx',
         './Cart': './src/components/Cart.jsx'
       },
       shared: {
