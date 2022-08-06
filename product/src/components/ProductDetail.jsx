@@ -1,37 +1,48 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Card, Container, Row, Col, Button, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Button, Spinner } from 'react-bootstrap';
+const cart_channel = new BroadcastChannel('cart_channel');
 
 const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [cart, setCart] = useState([]);
-  const cartItems = [];
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const currency = new Intl.NumberFormat('de-DE', {
     style: 'currency',
     currency: 'EUR'
   });
 
-  const cart_channel = new BroadcastChannel('cart_channel');
-
   useEffect(() => {
     setLoading(true);
     const getProductData = async () => {
-      await axios.get(`https://fakestoreapi.com/products/${id}`).then((res) => {
-        setProduct({});
-        setProduct(res.data);
-        setLoading(false);
-      });
+      try {
+        await axios
+          .get(`https://fakestoreapi.com/products/${id}`)
+          .then((res) => {
+            const { id, title, price, description, category, image } = res.data;
+            setProduct({
+              ...product,
+              id: id,
+              title: title,
+              price: price,
+              description: description,
+              category: category,
+              image: image
+            });
+          })
+          .then(() => setLoading(false));
+      } catch (error) {
+        console.log(error);
+      }
     };
     getProductData();
   }, []);
 
   function handleClick() {
     cart_channel.postMessage(product);
-    console.log(product);
   }
 
   return (
@@ -56,14 +67,26 @@ const ProductDetail = () => {
                   <p>{product.description}</p>
                 </Row>
                 <Row>
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      handleClick();
-                    }}
-                  >
-                    Add to Cart
-                  </Button>
+                  <Col>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        handleClick();
+                      }}
+                    >
+                      Add to Cart
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        navigate('/products');
+                      }}
+                    >
+                      Continue Shopping
+                    </Button>
+                  </Col>
                 </Row>
               </Container>
             </Col>

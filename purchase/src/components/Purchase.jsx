@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 
 const ProductDetail = React.lazy(() => import('product/ProductDetail'));
-const Cart = React.lazy(() => import('cart/Cart'));
+const Cart = React.lazy(() => import('cart/TinyCart'));
 
 const Purchase = () => {
   return (
