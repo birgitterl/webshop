@@ -4,16 +4,16 @@ const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPl
 const deps = require('./package.json').dependencies;
 module.exports = {
   output: {
-    publicPath: 'http://localhost:3000/',
+    publicPath: 'http://localhost:3000/'
   },
 
   resolve: {
-    extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
+    extensions: ['.tsx', '.ts', '.jsx', '.js', '.json']
   },
 
   devServer: {
     port: 3000,
-    historyApiFallback: true,
+    historyApiFallback: true
   },
 
   module: {
@@ -22,21 +22,21 @@ module.exports = {
         test: /\.m?js/,
         type: 'javascript/auto',
         resolve: {
-          fullySpecified: false,
-        },
+          fullySpecified: false
+        }
       },
       {
         test: /\.(css|s[ac]ss)$/i,
-        use: ['style-loader', 'css-loader', 'postcss-loader'],
+        use: ['style-loader', 'css-loader', 'postcss-loader']
       },
       {
         test: /\.(ts|tsx|js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
-        },
-      },
-    ],
+          loader: 'babel-loader'
+        }
+      }
+    ]
   },
 
   plugins: [
@@ -54,16 +54,16 @@ module.exports = {
         ...deps,
         react: {
           singleton: true,
-          requiredVersion: deps.react,
+          requiredVersion: deps.react
         },
         'react-dom': {
           singleton: true,
-          requiredVersion: deps['react-dom'],
-        },
-      },
+          requiredVersion: deps['react-dom']
+        }
+      }
     }),
     new HtmlWebPackPlugin({
-      template: './src/index.html',
-    }),
-  ],
+      template: './src/index.html'
+    })
+  ]
 };
