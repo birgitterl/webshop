@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import FormContainer from './FormContainerAuth';
-import { Form, Button, Row, Col, Alert } from 'react-bootstrap';
+import { Form, Button, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 
 const Register = () => {
-  let history = useHistory();
+  let navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -43,7 +43,7 @@ const Register = () => {
           config
         );
         console.log(res.data);
-        history.push('/login');
+        navigate('/login');
       } catch (error) {
         const errCode = error.response.data.status;
         const errMessage = error.response.data.msg;

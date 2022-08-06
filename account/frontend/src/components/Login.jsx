@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import FormContainer from './FormContainerAuth';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 
 const Login = () => {
-  let history = useHistory();
+  let navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [dirtyPassword, setDirtyPassword] = useState(false);
@@ -18,7 +18,7 @@ const Login = () => {
       const res = await axios.post('http://localhost:8080/auth', body);
       console.log(res.data);
       window.sessionStorage.setItem('token', res.data.token);
-      history.push('/products');
+      navigate('/products');
     } catch (error) {
       const errCode = error.response.data.status;
       const errMessage = error.response.data.msg;

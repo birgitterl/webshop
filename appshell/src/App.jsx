@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import './stylesheets/bootstrap.min.css';
 import './stylesheets/index.css';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 
@@ -20,33 +20,24 @@ const renderMFE = (MFE) => {
   );
 };
 
-export default function App() {
+const App = () => {
   return (
     <Router>
       <div>
         <NavBar />
         <div>
-          <Switch>
-            <Route
-              path="/"
-              element={
-                <React.Suspense fallback={<div>Loading home</div>}>
-                  <LandingPage />
-                </React.Suspense>
-              }
-            />
-            <Route path="/products" render={(_) => renderMFE(ProductCatalog)} />
-            <Route
-              path="/details/:id"
-              render={(_) => renderMFE(PurchaseContainer)}
-            />
-            <Route path="/cart" render={(_) => renderMFE(Cart)} />
-            <Route path="/login" render={(_) => renderMFE(Login)} />
-            <Route path="/register" render={(_) => renderMFE(Register)} />
-          </Switch>
+          <Routes>
+            <Route path="/" element={renderMFE(LandingPage)} />
+            <Route path="/products" element={renderMFE(ProductCatalog)} />
+            <Route path="/details/:id" element={renderMFE(PurchaseContainer)} />
+            <Route path="/cart" element={renderMFE(Cart)} />
+            <Route path="/login" element={renderMFE(Login)} />
+            <Route path="/register" element={renderMFE(Register)} />
+          </Routes>
         </div>
         <Footer />
       </div>
     </Router>
   );
-}
+};
+export default App;
