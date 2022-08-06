@@ -30,7 +30,6 @@ const Login = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      setDirtyPassword(false);
       setAlert(null);
     }, 5000);
   }, [alert]);
