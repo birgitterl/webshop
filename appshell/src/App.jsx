@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import './stylesheets/bootstrap.min.css';
 import './stylesheets/index.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -23,20 +23,16 @@ const renderMFE = (MFE) => {
 const App = () => {
   return (
     <Router>
-      <div>
-        <NavBar />
-        <div>
-          <Routes>
-            <Route path="/" element={renderMFE(LandingPage)} />
-            <Route path="/products" element={renderMFE(ProductCatalog)} />
-            <Route path="/details/:id" element={renderMFE(PurchaseContainer)} />
-            <Route path="/cart" element={renderMFE(Cart)} />
-            <Route path="/login" element={renderMFE(Login)} />
-            <Route path="/register" element={renderMFE(Register)} />
-          </Routes>
-        </div>
-        <Footer />
-      </div>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={renderMFE(LandingPage)} />
+        <Route path="/products" element={renderMFE(ProductCatalog)} />
+        <Route path="/details/:id" element={renderMFE(PurchaseContainer)} />
+        <Route path="/cart" element={renderMFE(Cart)} />
+        <Route path="/login" element={renderMFE(Login)} />
+        <Route path="/register" element={renderMFE(Register)} />
+      </Routes>
+      <Footer />
     </Router>
   );
 };
