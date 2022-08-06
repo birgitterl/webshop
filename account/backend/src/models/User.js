@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
     required: true
   },
   emp_no: {
-    type: Number,
+    type: String,
     required: true,
     unique: true
   }
