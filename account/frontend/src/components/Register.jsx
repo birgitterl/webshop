@@ -1,35 +1,35 @@
-import React, {useState, useEffect} from 'react';
-import {Link, useHistory} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import FormContainer from './FormContainerAuth';
 import { Form, Button, Row, Col, Alert } from 'react-bootstrap';
-import axios from 'axios'
+import axios from 'axios';
 
 const Register = () => {
   let history = useHistory();
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [name, setName] = useState('');
-    const [email, setEmail] =useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [empNo, setEmpNo] = useState('');
-    const [error, setError] = useState({});
-    const [dirtyPassword, setDirtyPassword] = useState(false);
-    const [userExists, setUserExists] =useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [empNo, setEmpNo] = useState('');
+  const [error, setError] = useState({});
+  const [dirtyPassword, setDirtyPassword] = useState(false);
+  const [userExists, setUserExists] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       setDirtyPassword(true);
-      setError({variant:"danger", message:"Passwords do not match"})
+      setError({ variant: 'danger', message: 'Passwords do not match' });
     } else {
       setDirtyPassword(false);
       const user = {
-          username: username,
-          password: password,
-          name: name,
-          email: email,
-          emp_no: empNo
-      }
+        username: username,
+        password: password,
+        name: name,
+        email: email,
+        emp_no: empNo
+      };
       const config = {
         headers: {
           'Content-Type': 'application/json'
@@ -38,29 +38,31 @@ const Register = () => {
 
       try {
         const res = await axios.post(
-        'http://localhost:8080/users', user, config);
+          'http://localhost:8080/users',
+          user,
+          config
+        );
         console.log(res.data);
-        history.push("/login");
+        history.push('/login');
       } catch (error) {
         const errCode = error.response.data.status;
         const errMessage = error.response.data.msg;
         setDirtyPassword(false);
-        if(errCode == 400 ){
+        if (errCode == 400) {
           setUserExists(true);
           setUserCreated(false);
-          setError({variant:"danger", message: errMessage})
+          setError({ variant: 'danger', message: errMessage });
         }
-        console.log("Error Status: " + errCode + "Error Message: " +errMessage);
-      }     
-    };
-  }
-  useEffect(() => {
-  }, [dirtyPassword, userExists])
-  
+        console.log(
+          'Error Status: ' + errCode + 'Error Message: ' + errMessage
+        );
+      }
+    }
+  };
+  useEffect(() => {}, [dirtyPassword, userExists]);
 
-    return (
+  return (
     <FormContainer>
-      
       <h1>Register your account</h1>
       <Form onSubmit={onSubmit}>
         <Form.Group controlId="username">
@@ -125,9 +127,12 @@ const Register = () => {
             minLength="6"
           />
         </Form.Group>
-        {dirtyPassword || userExists && <div className={`alert alert-${error.variant}`}>
-      {error.message}
-    </div>}
+        {dirtyPassword ||
+          (userExists && (
+            <div className={`alert alert-${error.variant}`}>
+              {error.message}
+            </div>
+          ))}
         <Button type="submit" variant="primary">
           Register
         </Button>

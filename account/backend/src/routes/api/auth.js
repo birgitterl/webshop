@@ -15,7 +15,7 @@ router.post('/', async (req, res) => {
   if (state !== 1) {
     return res.status(503).json({
       status: 503,
-      msg: 'Service unavailable',
+      msg: 'Service unavailable'
     });
   }
 
@@ -25,7 +25,7 @@ router.post('/', async (req, res) => {
     if (!user) {
       return res.status(404).json({
         status: 404,
-        msg: 'Invalid Username. Please try again.',
+        msg: 'Invalid Username. Please try again.'
       });
     }
 
@@ -34,14 +34,14 @@ router.post('/', async (req, res) => {
     if (!isMatch) {
       return res.status(404).json({
         status: 404,
-        msg: 'Invalid Password. Please try again',
+        msg: 'Invalid Password. Please try again'
       });
     }
 
     const payload = {
       user: {
-        username: user.username,
-      },
+        username: user.username
+      }
     };
 
     jwt.sign(payload, 'mysecrettoken', { expiresIn: 360000 }, (err, token) => {
@@ -51,7 +51,7 @@ router.post('/', async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       status: 500,
-      msg: 'Internal server error',
+      msg: 'Internal server error'
     });
   }
 });
@@ -62,25 +62,27 @@ router.get('/', auth, async (req, res) => {
   if (state !== 1) {
     return res.status(503).json({
       status: 503,
-      msg: 'Service unavailable',
+      msg: 'Service unavailable'
     });
   }
   try {
-    const user = await User.findOne(req.user.username).select('-password -_id -__v');
+    const user = await User.findOne(req.user.username).select(
+      '-password -_id -__v'
+    );
     if (user === null) {
       return res.status(404).json({
         status: 404,
-        msg: 'No user found',
+        msg: 'No user found'
       });
     }
     return res.status(200).json({
       status: 200,
-      user,
+      user
     });
   } catch (err) {
     return res.status(500).json({
       status: 500,
-      msg: 'Internal server error',
+      msg: 'Internal server error'
     });
   }
 });

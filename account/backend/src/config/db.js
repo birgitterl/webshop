@@ -3,7 +3,7 @@ const DB_URI =
   'mongodb+srv://birgitterl:account_mfe_birgitterl@cluster0.3op3k.mongodb.net/?retryWrites=true&w=majority';
 
 var options = {
-  useNewUrlParser: true,
+  useNewUrlParser: true
 };
 
 const connectDB = async () => {

@@ -8,49 +8,42 @@ const User = require('../../models/User');
 
 // Register a new user
 router.post('/', async (req, res) => {
-  const {
-    username,
-    password,
-    name,
-    email,
-    emp_no,
-  } = req.body;
+  const { username, password, name, email, emp_no } = req.body;
   let user = null;
 
   let state = mongoose.connection.readyState;
   if (state !== 1) {
     return res.status(503).json({
       status: 503,
-      msg: 'Service unavailable',
+      msg: 'Service unavailable'
     });
   }
 
   try {
     // See if user exists
-    user = await User.findOne({ username } );
+    user = await User.findOne({ username });
 
     if (user) {
       return res.status(400).json({
         status: 400,
-        msg: 'User already exists - Please choose another username',
+        msg: 'User already exists - Please choose another username'
       });
     }
 
-    user = await User.findOne({emp_no});
+    user = await User.findOne({ emp_no });
     if (user) {
       return res.status(400).json({
         status: 400,
-        msg: 'There is already a registered user for your employee number',
+        msg: 'There is already a registered user for your employee number'
       });
     }
-
 
     user = new User({
       username: username,
       password: password,
       name: name,
       email: email,
-      emp_no: emp_no,
+      emp_no: emp_no
     });
 
     // Encrypt password with bcrypt
@@ -66,12 +59,12 @@ router.post('/', async (req, res) => {
       username: username,
       name: name,
       email: email,
-      emp_no: emp_no,
+      emp_no: emp_no
     });
   } catch (err) {
     return res.status(500).json({
       status: 500,
-      msg: 'Internal server error',
+      msg: 'Internal server error'
     });
   }
 });
@@ -82,19 +75,19 @@ router.delete('/', async (req, res) => {
   if (state !== 1) {
     return res.status(503).json({
       status: 503,
-      msg: 'Service unavailable',
+      msg: 'Service unavailable'
     });
   }
   try {
     await User.remove();
     return res.status(200).json({
       status: 200,
-      msg: 'OK - All users removed',
+      msg: 'OK - All users removed'
     });
   } catch (err) {
     return res.status(500).json({
       status: 500,
-      msg: 'Internal server error',
+      msg: 'Internal server error'
     });
   }
 });
@@ -105,7 +98,7 @@ router.get('/', async (req, res) => {
   if (state !== 1) {
     return res.status(503).json({
       status: 503,
-      msg: 'Service unavailable',
+      msg: 'Service unavailable'
     });
   }
   try {
@@ -113,18 +106,18 @@ router.get('/', async (req, res) => {
     if (!users.length) {
       return res.status(404).json({
         status: 404,
-        msg: 'No users found',
+        msg: 'No users found'
       });
     } else {
       return res.status(200).json({
         status: 200,
-        users,
+        users
       });
     }
   } catch (err) {
     return res.status(500).json({
       status: 500,
-      msg: 'Internal server error',
+      msg: 'Internal server error'
     });
   }
 });
