@@ -160,14 +160,25 @@ const Cart = () => {
         <Row>
           <p></p>
         </Row>
-        <Row>
-          <Col></Col>
-          <Col></Col>
-          <Col></Col>
-          <Col>
-            <Button onClick={handleClick}>Checkout</Button>
-          </Col>
-        </Row>
+        {cart.length > 0 && (
+          <Row>
+            <Col>
+              {' '}
+              <Button variant="danger" onClick={handleClick}>
+                Delete Cart
+              </Button>
+            </Col>
+            <Col></Col>
+            <Col></Col>
+            <Col></Col>
+            <Col></Col>
+            <Col>
+              <Button variant="success" onClick={handleClick}>
+                Place Order
+              </Button>
+            </Col>
+          </Row>
+        )}
       </Container>
     </Container>
   );

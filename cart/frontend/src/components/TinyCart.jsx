@@ -171,20 +171,25 @@ const TinyCart = () => {
         </Container>
       </Row>
       <Row>
-        <Col></Col>
-        <Col></Col>
-        <Col></Col>
-        <Col>
-          <Button
-            variant="primary"
-            onClick={() => {
-              navigate('/cart');
-            }}
-          >
-            Proceed to Checkout
-          </Button>
-        </Col>
+        <p></p>
       </Row>
+      {cart.length > 0 && (
+        <Row>
+          <Col></Col>
+          <Col></Col>
+          <Col></Col>
+          <Col>
+            <Button
+              variant="success"
+              onClick={() => {
+                navigate('/cart');
+              }}
+            >
+              Proceed to Checkout
+            </Button>
+          </Col>
+        </Row>
+      )}
     </Container>
   );
 };
