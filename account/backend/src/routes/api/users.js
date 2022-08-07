@@ -6,7 +6,9 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../../models/User');
 
-// Register a new user
+// @route    POST users
+// @desc     Register a new user
+// @access   Public
 router.post('/', async (req, res) => {
   const { username, password, name, email, emp_no } = req.body;
   let user = null;
@@ -20,7 +22,7 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    // See if user exists
+    // See if user exists by username or employee number
     user = await User.findOne({ username });
 
     if (user) {
@@ -38,6 +40,7 @@ router.post('/', async (req, res) => {
       });
     }
 
+    // create a new User from request body
     user = new User({
       username: username,
       password: password,
@@ -69,7 +72,9 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Delete all registered users (for testing only)
+// @route    DELETE users
+// @desc     Delete all users (for testing only)
+// @access   Public
 router.delete('/', async (req, res) => {
   let state = mongoose.connection.readyState;
   if (state !== 1) {
@@ -92,7 +97,9 @@ router.delete('/', async (req, res) => {
   }
 });
 
-// Get all users (for testing only)
+// @route    GET users
+// @desc     Get all users (for testing only)
+// @access   Public
 router.get('/', async (req, res) => {
   let state = mongoose.connection.readyState;
   if (state !== 1) {

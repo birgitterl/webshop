@@ -6,16 +6,33 @@ import axios from 'axios';
 
 const Login = () => {
   let navigate = useNavigate();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [alert, setAlert] = useState(null);
 
+  //API call configuration of headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  // set Alert Timeout
+  useEffect(() => {
+    setTimeout(() => {
+      setAlert(null);
+    }, 5000);
+  }, [alert]);
+
+  // Login to application
   const onSubmit = async (e) => {
     e.preventDefault();
     const body = { username, password };
     try {
-      const res = await axios.post('http://localhost:8080/auth', body);
-      console.log(res.data);
+      const res = await axios.post('http://localhost:8080/auth', body, config);
+
+      // store token in Session Storage
       window.sessionStorage.setItem('token', res.data.token);
       navigate('/products');
     } catch (error) {
@@ -24,15 +41,8 @@ const Login = () => {
       if (errCode == 404) {
         setAlert({ variant: 'danger', message: errMessage });
       }
-      console.log('Error Status: ' + errCode + ' Error Message: ' + errMessage);
     }
   };
-
-  useEffect(() => {
-    setTimeout(() => {
-      setAlert(null);
-    }, 5000);
-  }, [alert]);
 
   return (
     <div>

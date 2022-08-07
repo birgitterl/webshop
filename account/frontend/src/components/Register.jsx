@@ -6,6 +6,7 @@ import axios from 'axios';
 
 const Register = () => {
   let navigate = useNavigate();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -14,8 +15,25 @@ const Register = () => {
   const [empNo, setEmpNo] = useState('');
   const [alert, setAlert] = useState(null);
 
+  //API call configuration of headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  // set Alert Timeout
+  useEffect(() => {
+    setTimeout(() => {
+      setAlert(null);
+    }, 5000);
+  }, [alert]);
+
+  // Submit Registration
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    // check if password and confirm password matches, else show Alert
     if (password !== confirmPassword) {
       setAlert({ variant: 'danger', message: 'Passwords do not match' });
     } else {
@@ -26,12 +44,8 @@ const Register = () => {
         email: email,
         emp_no: empNo
       };
-      const config = {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      };
 
+      //@TODO: ggf. auslagern auf api/users.js
       try {
         const res = await axios.post(
           'http://localhost:8080/users',
@@ -46,17 +60,9 @@ const Register = () => {
         if (errCode == 400) {
           setAlert({ variant: 'danger', message: errMessage });
         }
-        console.log(
-          'Error Status: ' + errCode + 'Error Message: ' + errMessage
-        );
       }
     }
   };
-  useEffect(() => {
-    setTimeout(() => {
-      setAlert(null);
-    }, 5000);
-  }, [alert]);
 
   return (
     <div>
