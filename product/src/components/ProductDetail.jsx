@@ -5,22 +5,28 @@ import { Container, Row, Col, Button, Spinner } from 'react-bootstrap';
 const cart_channel = new BroadcastChannel('cart_channel');
 
 const ProductDetail = () => {
-  const { id } = useParams();
-  const [product, setProduct] = useState({});
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Get product ID from URL parameters
+  const { id } = useParams();
+  const [product, setProduct] = useState({});
+  const [productsFetched, setProductsFetched] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // format currency fields
   const currency = new Intl.NumberFormat('de-DE', {
     style: 'currency',
     currency: 'EUR'
   });
 
+  // upon first render get product details from fakestoreapi
   useEffect(() => {
     setLoading(true);
     const getProductData = async () => {
       try {
         await axios
           .get(`https://fakestoreapi.com/products/${id}`)
+          .then(setProductsFetched(true))
           .then((res) => {
             const { id, title, price, description, category, image } = res.data;
             setProduct({
@@ -32,15 +38,17 @@ const ProductDetail = () => {
               category: category,
               image: image
             });
-          })
-          .then(() => setLoading(false));
+          });
       } catch (error) {
         console.log(error);
+        setProductsFetched(false);
       }
     };
     getProductData();
+    setLoading(false);
   }, []);
 
+  // post message to cart_channel upon adding a product to the cart
   function handleClick() {
     cart_channel.postMessage(product);
   }
@@ -49,7 +57,7 @@ const ProductDetail = () => {
     <Container fluid>
       {loading ? (
         <Spinner />
-      ) : (
+      ) : productsFetched ? (
         <Container fluid>
           <Row>
             <h1>{product.title}</h1>
@@ -90,6 +98,15 @@ const ProductDetail = () => {
                 </Row>
               </Container>
             </Col>
+          </Row>
+        </Container>
+      ) : (
+        <Container>
+          <Row>
+            <h1>Product Details</h1>
+            <h5 style={{ color: 'red' }}>
+              Something went wrong - please try again later...
+            </h5>
           </Row>
         </Container>
       )}

@@ -4,41 +4,44 @@ import axios from 'axios';
 
 const ProductCatalog = () => {
   const [productList, setProductList] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [id, setID] = useState();
+  const [productsFetched, setProductsFetched] = useState(false);
+  // auth State: get token from Session storage and set auth to true
   const [auth, setAuth] = useState(false);
+  useEffect(() => {
+    const token = window.sessionStorage.getItem('token');
+    if (token) setAuth(true);
+  }, []);
 
+  // format currency fields
   const currency = new Intl.NumberFormat('de-DE', {
     style: 'currency',
     currency: 'EUR'
   });
 
-  useEffect(() => {
-    setLoading(true);
-    const token = window.sessionStorage.getItem('token');
-    if (token) setAuth(true);
-  }, []);
-
+  // retrieve products from fakestoreapi upon successfull authentication
   useEffect(() => {
     const getProductData = async () => {
-      await axios.get(`https://fakestoreapi.com/products`).then((res) => {
-        setProductList(res.data);
-        setLoading(false);
-      });
+      try {
+        await axios
+          .get(`https://fakestoreapi.com/products`)
+          .then(setProductsFetched(true))
+          .then((res) => {
+            setProductList(res.data);
+          });
+      } catch (error) {
+        console.log(error);
+        setProductsFetched(false);
+      }
     };
     getProductData();
   }, [auth]);
-
-  function handleClick(id) {
-    setID(id);
-  }
 
   return (
     <Container fluid>
       <Row>
         <h1>Corporate Offering</h1>
       </Row>
-      {auth ? (
+      {auth && productsFetched ? (
         <Row md={{ span: 4 }}>
           {productList.map((item, index) => (
             <Col className="col-md4-bottom-margin" md={{ span: 4 }} key={index}>
@@ -51,10 +54,7 @@ const ProductCatalog = () => {
                 <Card.Body>
                   <Card.Title>{item.title}</Card.Title>
                   <Card.Text>{currency.format(item.price)}</Card.Text>
-                  <a
-                    href={`/details/${item.id}`}
-                    onClick={() => handleClick(item.id)}
-                  >
+                  <a href={`/details/${item.id}`}>
                     <Button>Show Details</Button>
                   </a>
                 </Card.Body>
@@ -62,6 +62,14 @@ const ProductCatalog = () => {
             </Col>
           ))}
         </Row>
+      ) : auth && !productsFetched ? (
+        <Container>
+          <Row>
+            <h5 style={{ color: 'red' }}>
+              Something went wrong - please try again later...
+            </h5>
+          </Row>
+        </Container>
       ) : (
         <Container>
           <Row>
