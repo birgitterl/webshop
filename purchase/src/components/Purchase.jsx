@@ -1,5 +1,6 @@
 import React, { Suspense, useState, useEffect } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
+import SafeComponent from './SafeComponent';
 
 // lazy loading micro frontends
 const ProductDetail = React.lazy(() => import('product/ProductDetail'));
@@ -16,18 +17,24 @@ const Purchase = () => {
   return (
     <Container fluid>
       {auth ? (
-        <Suspense fallback={<div>Loading...</div>}>
-          <Container fluid>
-            <Row>
-              <Col>
-                <ProductDetail />
-              </Col>
-              <Col>
-                <Cart />
-              </Col>
-            </Row>
-          </Container>
-        </Suspense>
+        <Container fluid>
+          <Row>
+            <Col>
+              <SafeComponent>
+                <Suspense fallback={<div>Loading...</div>}>
+                  <ProductDetail />
+                </Suspense>
+              </SafeComponent>
+            </Col>
+            <Col>
+              <SafeComponent>
+                <Suspense fallback={<div>Loading...</div>}>
+                  <Cart />
+                </Suspense>
+              </SafeComponent>
+            </Col>
+          </Row>
+        </Container>
       ) : (
         <Container>
           <Row>
