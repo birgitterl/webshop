@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Container, Row, Col, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const ProductCatalog = () => {
+  const navigate = useNavigate();
   const [productList, setProductList] = useState([]);
   const [productsFetched, setProductsFetched] = useState(false);
   // auth State: get token from Session storage and set auth to true
@@ -54,9 +56,9 @@ const ProductCatalog = () => {
                 <Card.Body>
                   <Card.Title>{item.title}</Card.Title>
                   <Card.Text>{currency.format(item.price)}</Card.Text>
-                  <a href={`/details/${item.id}`}>
-                    <Button>Show Details</Button>
-                  </a>
+                  <Button onClick={() => navigate(`/details/${item.id}`)}>
+                    Show Details
+                  </Button>
                 </Card.Body>
               </Card>
             </Col>

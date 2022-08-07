@@ -242,7 +242,7 @@ router.delete('/', async (req, res) => {
 });
 
 // @route    DELETE cart/:username
-// @desc     Delete  carts for a given user (for testing only)
+// @desc     Delete  carts for a given user
 // @access   Public
 router.delete('/:username', async (req, res) => {
   let username = req.params.username;
