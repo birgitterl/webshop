@@ -58,6 +58,14 @@ module.exports = {
         'react-dom': {
           singleton: true,
           requiredVersion: deps['react-dom']
+        },
+        'react-router-dom': {
+          singleton: true,
+          requiredVersion: deps['react-router-dom']
+        },
+        'react-bootstrap': {
+          singleton: true,
+          requiredVersion: deps['react-bootstrap']
         }
       }
     }),
