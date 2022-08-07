@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import axios from 'axios';
+
 const cart_channel = new BroadcastChannel('cart_channel');
 
 const TinyCart = () => {
