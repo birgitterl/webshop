@@ -34,6 +34,7 @@ const Login = () => {
 
       // store token in Session Storage
       window.sessionStorage.setItem('token', res.data.token);
+      window.sessionStorage.setItem('username', username);
       navigate('/products');
     } catch (error) {
       const errCode = error.response.data.status;

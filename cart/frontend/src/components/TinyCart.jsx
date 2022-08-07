@@ -12,8 +12,7 @@ const TinyCart = () => {
   const [cartItem, setCartItem] = useState({});
   const [cartPrice, setCartPrice] = useState(0);
 
-  //@TODO: implement username dynamically
-  const username = 'birgit';
+  const username = window.sessionStorage.getItem('username');
 
   // format currency
   const currency = new Intl.NumberFormat('de-DE', {

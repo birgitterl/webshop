@@ -8,6 +8,7 @@ const NavBar = () => {
   // remove token from Session Storage upon Logout
   function logout() {
     sessionStorage.removeItem('token');
+    sessionStorage.removeItem('username');
     navigate('/');
   }
   return (

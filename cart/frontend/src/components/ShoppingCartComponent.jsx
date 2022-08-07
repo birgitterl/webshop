@@ -24,8 +24,7 @@ const ShoppingCart = () => {
     }
   };
 
-  //@TODO: implement username dynamically
-  const username = 'birgit';
+  const username = window.sessionStorage.getItem('username');
 
   // set timeout for alerts
   useEffect(() => {
