@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
   const navigate = useNavigate();
+
+  // remove token from Session Storage upon Logout
   function logout() {
     sessionStorage.removeItem('token');
     navigate('/');

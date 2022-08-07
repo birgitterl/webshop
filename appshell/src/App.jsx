@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+import { Spinner } from 'react-bootstrap';
 import './stylesheets/bootstrap.min.css';
 import './stylesheets/index.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -14,7 +15,13 @@ const Register = React.lazy(() => import('account/Register'));
 
 const renderMFE = (MFE) => {
   return (
-    <Suspense fallback="Loading...">
+    <Suspense
+      fallback={
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      }
+    >
       <MFE />
     </Suspense>
   );
