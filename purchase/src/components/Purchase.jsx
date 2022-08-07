@@ -1,12 +1,13 @@
 import React, { Suspense, useState, useEffect } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 
+// lazy loading micro frontends
 const ProductDetail = React.lazy(() => import('product/ProductDetail'));
 const Cart = React.lazy(() => import('cart/TinyCart'));
 
 const Purchase = () => {
+  // auth State: get token from Session storage and set auth to true
   const [auth, setAuth] = useState(false);
-
   useEffect(() => {
     const token = window.sessionStorage.getItem('token');
     if (token) setAuth(true);
