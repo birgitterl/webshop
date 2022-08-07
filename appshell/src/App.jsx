@@ -5,6 +5,7 @@ import './stylesheets/index.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
+import SafeComponent from './components/SafeComponent';
 
 const LandingPage = React.lazy(() => import('account/LandingPage'));
 const ProductCatalog = React.lazy(() => import('product/ProductCatalog'));
@@ -15,15 +16,17 @@ const Register = React.lazy(() => import('account/Register'));
 
 const renderMFE = (MFE) => {
   return (
-    <Suspense
-      fallback={
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      }
-    >
-      <MFE />
-    </Suspense>
+    <SafeComponent>
+      <Suspense
+        fallback={
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        }
+      >
+        <MFE />
+      </Suspense>
+    </SafeComponent>
   );
 };
 
