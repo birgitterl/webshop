@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useEffect } from 'react';
+import React, { Suspense } from 'react';
 import './stylesheets/bootstrap.min.css';
 import './stylesheets/index.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
