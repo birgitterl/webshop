@@ -6,25 +6,32 @@ const cart_channel = new BroadcastChannel('cart_channel');
 
 const TinyCart = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+
   const [product, setProduct] = useState({});
   const [cart, setCart] = useState([]);
   const [cartItem, setCartItem] = useState({});
   const [cartPrice, setCartPrice] = useState(0);
+
+  //@TODO: implement username dynamically
   const username = 'birgit';
+
+  // format currency
   const currency = new Intl.NumberFormat('de-DE', {
     style: 'currency',
     currency: 'EUR'
   });
+
+  // header configuration for API calls
   const config = {
     headers: {
       'Content-Type': 'application/json'
     }
   };
 
+  // listen to messages in cart_channel (new products added)
   cart_channel.onmessage = function (e) {
-    console.log(e);
     const { id, title, price, description, category, image } = e.data;
+    // update product status --> triggers useEffect and re-render
     setProduct({
       ...product,
       id: id,
@@ -36,20 +43,17 @@ const TinyCart = () => {
     });
   };
 
+  // load cart from backend upon first render
   useEffect(() => {
-    setLoading(true);
     const loadCart = async () => {
       try {
         await axios
           .get(`http://localhost:8081/cart/${username}`)
           .then((res) => {
-            console.log(res.data.cart);
             setCart(res.data.cart.products);
             setCartPrice(res.data.cart.cartPrice);
           })
-          .then(() => {
-            setLoading(false);
-          });
+          .then(() => {});
       } catch (error) {
         console.log(error);
       }
@@ -57,15 +61,15 @@ const TinyCart = () => {
     loadCart();
   }, []);
 
+  // add a product to DB upon product state change (i.e., after broadcast message was received)
   useEffect(() => {
-    setLoading(true);
     const addProduct = async () => {
       try {
         await axios
           .post('http://localhost:8081/product', product, config)
           .then((res) => {
-            console.log(res.data);
             const { id, title, price, totalAmount } = res.data.product;
+            // update CartItem Status
             setCartItem({
               ...cartItem,
               id: id,
@@ -74,29 +78,24 @@ const TinyCart = () => {
               price: price,
               totalAmount: totalAmount
             });
-          })
-          .then(() => {
-            setLoading(false);
           });
       } catch (error) {
-        console.log(error.response.data);
+        console.log(error);
       }
     };
     addProduct();
   }, [product]);
 
+  // add a product to cart upon cartItem state change
   useEffect(() => {
-    setLoading(true);
     const addCartItems = async () => {
       try {
         const res = await axios
           .post(`http://localhost:8081/cart/${username}`, cartItem, config)
           .then((res) => {
+            //update state of cart
             setCart(res.data.cart.products);
             setCartPrice(res.data.cart.cartPrice);
-          })
-          .then(() => {
-            setLoading(false);
           });
       } catch (error) {
         console.log(error.response.data);
@@ -105,6 +104,7 @@ const TinyCart = () => {
     addCartItems();
   }, [cartItem]);
 
+  // re-load cart upon update of carte state
   useEffect(() => {}, [cart]);
 
   return (

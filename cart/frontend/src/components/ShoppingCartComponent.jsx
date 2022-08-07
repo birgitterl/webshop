@@ -4,27 +4,38 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const ShoppingCart = () => {
+  const navigate = useNavigate();
+
   const [cart, setCart] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [cartPrice, setCartPrice] = useState(0);
   const [updatedCart, setUpdatedCart] = useState(false);
   const [alert, setAlert] = useState(null);
 
+  // format currency
   const currency = new Intl.NumberFormat('de-DE', {
     style: 'currency',
     currency: 'EUR'
   });
+
+  // header configuration for API calls
   const config = {
     headers: {
       'Content-Type': 'application/json'
     }
   };
-  const navigate = useNavigate();
 
+  //@TODO: implement username dynamically
   const username = 'birgit';
 
+  // set timeout for alerts
   useEffect(() => {
-    setLoading(true);
+    setTimeout(() => {
+      setAlert(null);
+    }, 5000);
+  }, [alert]);
+
+  // load Cart on inital render and upon updates of the cart
+  useEffect(() => {
     const loadCart = async () => {
       try {
         await axios
@@ -34,16 +45,19 @@ const ShoppingCart = () => {
             setCart(res.data.cart.products);
             setCartPrice(res.data.cart.cartPrice);
           })
-          .then(() => {
-            setLoading(false);
-          });
+          .then(() => {});
       } catch (error) {
-        console.log(error);
+        const errCode = error.response.data.status;
+        const errMessage = error.response.data.msg;
+        if (errCode == 404) {
+          setAlert({ variant: 'danger', message: errMessage });
+        }
       }
     };
     loadCart();
   }, [updatedCart]);
 
+  // delete cart
   async function handleClick() {
     try {
       await axios.delete(`http://localhost:8081/cart/${username}`);
@@ -53,9 +67,9 @@ const ShoppingCart = () => {
     }
   }
 
+  // update cart item quantity
   async function quantityChange(id, e) {
     try {
-      setLoading(true);
       let body = null;
       body = { id: id, increase: e };
       await axios
@@ -63,28 +77,20 @@ const ShoppingCart = () => {
         .then((res) => {
           console.log(res.data);
           setUpdatedCart(!updatedCart);
-        })
-        .then(setLoading(false));
+        });
     } catch (error) {
       const errCode = error.response.data.status;
       const errMessage = error.response.data.msg;
+      // show alert if no cart exists
       if (errCode == 404) {
         setAlert({ variant: 'danger', message: errMessage });
       }
-      console.log('Error Status: ' + errCode + ' Error Message: ' + errMessage);
     }
   }
-
-  useEffect(() => {
-    setTimeout(() => {
-      setAlert(null);
-    }, 5000);
-  }, [alert]);
 
   return (
     <Container fluid>
       {alert !== null && <Alert variant={alert.variant}>{alert.message}</Alert>}
-      <h1 className="text-center">Your Cart</h1>
       <Container fluid className="square border-bottom">
         <Row></Row>
         <Row>

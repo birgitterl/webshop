@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button, Alert } from 'react-bootstrap';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Container, Row, Button } from 'react-bootstrap';
 import ShoppingCart from './ShoppingCartComponent';
 
 const Cart = () => {
+  // auth State: get token from Session storage and set auth to true
   const [auth, setAuth] = useState(false);
-
   useEffect(() => {
     const token = window.sessionStorage.getItem('token');
     if (token) setAuth(true);

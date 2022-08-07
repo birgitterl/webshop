@@ -5,7 +5,9 @@ const router = express.Router();
 const Product = require('../../models/Product');
 const Cart = require('../../models/Cart');
 
-// Get carts by username
+// @route    get cart/:username
+// @desc     Get cart by username
+// @access   Public
 router.get('/:username', async (req, res) => {
   const username = req.params.username;
   let cart = null;
@@ -19,8 +21,10 @@ router.get('/:username', async (req, res) => {
   }
 
   try {
+    //check if a cart exists for the user
     cart = await Cart.findOne({ username });
-    console.log(Cart);
+
+    // return cart
     if (cart) {
       return res.status(200).json({
         status: 200,
@@ -33,6 +37,7 @@ router.get('/:username', async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       status: 500,
       msg: 'Internal server error'
@@ -40,7 +45,9 @@ router.get('/:username', async (req, res) => {
   }
 });
 
-// Add products to cart
+// @route    POST cart/:username
+// @desc     Create or update a cart
+// @access   Public
 router.post('/:username', async (req, res) => {
   const username = req.params.username;
   const { id, title, quantity, price } = req.body;
@@ -57,8 +64,12 @@ router.post('/:username', async (req, res) => {
   }
 
   try {
+    // check if cart exists for the user
     cart = await Cart.findOne({ username });
+
+    // check if product exists
     product = await Product.findOne({ id });
+
     if (!product) {
       return res.status(404).json({
         status: 404,
@@ -66,15 +77,18 @@ router.post('/:username', async (req, res) => {
       });
     }
 
+    // if a cart exists for the user; the cart is updated
     if (cart) {
       let productIndex = cart.products.findIndex((p) => p.id == id);
 
+      // check if product is already in the cart to update quantity and total amount
       if (productIndex > -1) {
         let productItem = cart.products[productIndex];
         productItem.quantity += quantity;
         productItem.totalAmount = productItem.quantity * price;
         cart.products[productIndex] = productItem;
       } else {
+        // add new cart item from request body
         let totalAmount = price;
         cart.products.push({ id, title, quantity, price, totalAmount });
       }
@@ -82,13 +96,13 @@ router.post('/:username', async (req, res) => {
         sum += e.totalAmount;
       });
       cart.cartPrice = sum;
-      console.log(cart.cartPrice);
       cart = await cart.save();
       return res.status(201).json({
         status: 201,
         cart
       });
     } else {
+      // cart does not exist for the user; a new cart is created
       cart = new Cart({
         username: username,
         products: [
@@ -117,7 +131,9 @@ router.post('/:username', async (req, res) => {
   }
 });
 
-// Update quantity
+// @route    PUT cart/:username
+// @desc     Update the quantity of a cart item
+// @access   Public
 router.put('/:username', async (req, res) => {
   const username = req.params.username;
   const { id, increase } = req.body;
@@ -134,7 +150,10 @@ router.put('/:username', async (req, res) => {
   }
 
   try {
+    // check if cart exists for the user
     cart = await Cart.findOne({ username });
+
+    // check if product exists
     product = cart.products.find((e) => e.id == id);
     if (!cart) {
       return res.status(404).json({
@@ -149,42 +168,43 @@ router.put('/:username', async (req, res) => {
     } else {
       let price = product.price;
       let productIndex = cart.products.findIndex((p) => p.id == id);
-      if (productIndex > -1) {
-        let productItem = cart.products[productIndex];
-        if (increase) {
-          productItem.quantity += 1;
-          productItem.totalAmount = productItem.quantity * price;
-          cart.products[productIndex] = productItem;
-          cart.products.forEach((e) => {
-            sum += e.totalAmount;
-          });
-          cart.cartPrice = sum;
-        } else if (!increase && productItem.quantity == 0) {
-          return res.status(404).json({
-            status: 404,
-            msg: 'Quantity cannot be negative!'
-          });
-        } else if (!increase && productItem.quantity == 1) {
-          cart.products.splice(productIndex, 1);
-          cart.products.forEach((e) => {
-            sum += e.totalAmount;
-          });
-          cart.cartPrice = sum;
-        } else if (!increase && productItem.quantity > 0) {
-          productItem.quantity -= 1;
-          productItem.totalAmount = productItem.quantity * price;
-          cart.products[productIndex] = productItem;
-          cart.products.forEach((e) => {
-            sum += e.totalAmount;
-          });
-          cart.cartPrice = sum;
-        }
-        cart = await cart.save();
-        return res.status(201).json({
-          status: 201,
-          cart
+      let productItem = cart.products[productIndex];
+
+      // increase quantity of a cart item
+      if (increase) {
+        productItem.quantity += 1;
+        productItem.totalAmount = productItem.quantity * price;
+        cart.products[productIndex] = productItem;
+        cart.products.forEach((e) => {
+          sum += e.totalAmount;
         });
+        cart.cartPrice = sum;
+
+        // decrease quantity leads to quantity=0: remove item from cart
+      } else if (!increase && productItem.quantity == 1) {
+        cart.products.splice(productIndex, 1);
+        cart.products.forEach((e) => {
+          sum += e.totalAmount;
+        });
+        cart.cartPrice = sum;
+
+        // decrease quantity of a cart item
+      } else if (!increase && productItem.quantity > 0) {
+        productItem.quantity -= 1;
+        productItem.totalAmount = productItem.quantity * price;
+        cart.products[productIndex] = productItem;
+        cart.products.forEach((e) => {
+          sum += e.totalAmount;
+        });
+        cart.cartPrice = sum;
       }
+
+      // save cart updates
+      cart = await cart.save();
+      return res.status(201).json({
+        status: 201,
+        cart
+      });
     }
   } catch (error) {
     console.log(error);
@@ -195,7 +215,9 @@ router.put('/:username', async (req, res) => {
   }
 });
 
-// Delete all carts(for testing only)
+// @route    DELETE cart
+// @desc     Delete all carts(for testing only)
+// @access   Public
 router.delete('/', async (req, res) => {
   let state = mongoose.connection.readyState;
   if (state !== 1) {
@@ -210,7 +232,8 @@ router.delete('/', async (req, res) => {
       status: 200,
       msg: 'OK - All carts removed'
     });
-  } catch (err) {
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({
       status: 500,
       msg: 'Internal server error'
@@ -218,7 +241,9 @@ router.delete('/', async (req, res) => {
   }
 });
 
-// Delete carts by username
+// @route    DELETE cart/:username
+// @desc     Delete  carts for a given user (for testing only)
+// @access   Public
 router.delete('/:username', async (req, res) => {
   let username = req.params.username;
   let cart = null;
@@ -230,8 +255,8 @@ router.delete('/:username', async (req, res) => {
     });
   }
   try {
+    // check if cart exists for the username
     cart = await Cart.findOne({ username });
-    console.log(cart);
 
     await Cart.deleteOne({ username });
 
@@ -239,7 +264,8 @@ router.delete('/:username', async (req, res) => {
       status: 200,
       msg: `OK - Cart of ${username} removed`
     });
-  } catch (err) {
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({
       status: 500,
       msg: 'Internal server error'
@@ -247,7 +273,9 @@ router.delete('/:username', async (req, res) => {
   }
 });
 
-// Get all carts (for testing only)
+// @route    GET cart
+// @desc     Get all carts(for testing only)
+// @access   Public
 router.get('/', async (req, res) => {
   let state = mongoose.connection.readyState;
   if (state !== 1) {
@@ -258,6 +286,8 @@ router.get('/', async (req, res) => {
   }
   try {
     const carts = await Cart.find().select('-_id -__v');
+
+    // check if any carts exist
     if (!carts.length) {
       return res.status(404).json({
         status: 404,
@@ -269,7 +299,8 @@ router.get('/', async (req, res) => {
         carts
       });
     }
-  } catch (err) {
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({
       status: 500,
       msg: 'Internal server error'
